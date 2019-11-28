@@ -1,0 +1,90 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+@using PagedList;
+@using PagedList.Mvc;
+@using MarketBrands.Models;
+
+
+@model IPagedList<MarketBrands.Models.Market>
+
+@{
+    /**/
+
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.First().Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.First().Brand)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.First().Model)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.First().Color)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.First().Price)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Brand)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Model)
+            </td>
+
+            <td>
+                @using (Html.BeginForm("SaveItem", "MarketController", FormMethod.Post))
+                {
+
+                    @Html.DropDownListFor(m => item.BasicColor,
+                    new SelectList(Enum.GetValues(typeof(BasicColors))),
+                    item.Color)
+                    @Html.HiddenFor(model => item.Id)
+                   
+                }
+            </td>
+            <td>
+                @Html.TextBoxFor(modelItem => item.Price)
+                @Html.HiddenFor(model => item.Id)
+
+
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
+
+</table>
+<P>
+
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }),
+    new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded
+        ,DisplayPageCountAndCurrentLocation = true
+       })
+
+</P>
